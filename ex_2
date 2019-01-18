@@ -1,0 +1,103 @@
+#include<iostream>
+#include<fstream>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+#include<time.h>
+ 
+using namespace std;
+
+class set {
+	public:
+	char id[100][100];
+	int length=0;
+	
+	set(){
+		for(int i = 0;i<100;i++){
+			strcpy(id[i],"");
+		}
+	}
+	void add(char s[]){
+		
+		for(int i = 0;i<length;i++){
+			if(strcmp(id[i],s)==0){
+				return;
+			}
+		}
+		strcpy(id[length++],s);
+		
+	}
+};
+ 
+int isKeyword(char buffer[]){
+	char keywords[100][100] = {"auto","break","case","char","const","continue","default",
+							"do","double","else","enum","extern","float","for","goto",
+							"if","int","long","register","return","short","signed",
+							"sizeof","static","struct","switch","typedef","union",
+							"unsigned","void","volatile","while","main","include","conio","stdio"};
+	int i, flag = 0;
+	
+	int len = (sizeof(keywords)/sizeof(*keywords));
+	for(i = 0; i < len; ++i){
+		if(strcmp(keywords[i], buffer) == 0){
+			flag = 1;
+			break;
+		}
+	}
+	
+	return flag;
+}
+ 
+int isInteger(char s) 
+{ 
+        if (s!= '0' && s != '1' && s != '2'
+            && s != '3' && s != '4' && s != '5'
+            && s != '6' && s != '7' && s != '8'
+            && s != '9' ) 
+            return 0;   
+    return 1; 
+} 
+
+int main(){
+	char ch, buffer[100];
+	char label[100][100];
+	set s;
+	int labelcount = 0;
+	ifstream fin("program.txt");
+	int i,j=0;
+	srand (time(NULL));
+	if(!fin.is_open()){
+		cout<<"error while opening the file\n";
+		exit(0);
+	}
+	cout<<"LABEL\t|\tADDRESS\t|\tVALUE\n";
+	while(!fin.eof()){
+   		ch = fin.get();
+   		
+   		if(isInteger(ch) == 1 ){
+   			continue;
+		}
+   		else if(isalnum(ch)){
+   			buffer[j++] = ch;
+   		}
+   		else if((ch == ' ' || ch == '\n' || ch == '(' || ch == ')' || ch == ',' || ch == ';' || ch == '/' || ch == '-' || ch == '+' || ch == '<' || ch == '>' || ch == '*'|| ch == '=') && (j != 0)){
+   				buffer[j] = '\0';
+   				j = 0;
+   				   				
+   				if(isKeyword(buffer) == 0){  
+   					s.add(buffer);
+
+   				}
+   		}
+   		
+	}
+	for(int i=0;i<s.length;i++){
+		cout << s.id[i] << "\t|\t" << "0x" <<rand() << "\t|\t" << rand()<<"\n";
+	}
+	
+	
+
+	fin.close();
+	
+	return 0;
+}
