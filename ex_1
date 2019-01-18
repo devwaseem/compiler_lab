@@ -1,0 +1,74 @@
+#include<iostream>
+#include<fstream>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+ 
+using namespace std;
+ 
+int isKeyword(char buffer[]){
+	char keywords[100][100] = {"auto","break","case","char","const","continue","default",
+							"do","double","else","enum","extern","float","for","goto",
+							"if","int","long","register","return","short","signed",
+							"sizeof","static","struct","switch","typedef","union",
+							"unsigned","main","volatile","while","void","return"};
+	char pre[100][100] = {"include","iostream.h","stdio","conio"};
+	int i, flag = 0;
+	int keylen = (sizeof(keywords)/sizeof(*keywords));
+	int prelen = (sizeof(keywords)/sizeof(*keywords));
+	for(i = 0; i < keylen; ++i){
+		if(strcmp(keywords[i], buffer) == 0){
+			flag = 1;
+			break;
+		}
+	}
+	for(i = 0; i < prelen; ++i){
+		if(strcmp(pre[i], buffer) == 0){
+			flag = 2;
+			break;
+		}
+	}
+	
+	
+	return flag;
+}
+ 
+int main(){
+	char ch, buffer[15], operators[] = "+-*/%=";
+	ifstream fin("program.txt");
+	int i,j=0;
+	
+	if(!fin.is_open()){
+		cout<<"error while opening the file\n";
+		exit(0);
+	}
+	
+	while(!fin.eof()){
+   		ch = fin.get();
+   		
+		for(i = 0; i < 6; ++i){
+   			if(ch == operators[i])
+   				cout<<ch<<" is operator\n";
+   		}
+   		
+   		if(isalnum(ch)){
+   			buffer[j++] = ch;
+   		}
+   		else if((ch == ' ' || ch == '\n' || ch == '(' || ch == ')' || ch == ',' || ch == ';' || ch == '/' || ch == '-' || ch == '+' || ch == '<' || ch == '>' || ch == '*'|| ch == '=') && (j != 0)){
+   				buffer[j] = '\0';
+   				j = 0;
+   				   				
+   				if(isKeyword(buffer) == 1)
+   					cout<<buffer<<" is Keyword\n";
+				else if(isKeyword(buffer) == 2)
+   					cout<<buffer<<" is a Preprocessor\n";
+   				else
+   					cout<<buffer<<" is Indentifier\n";
+   		}
+   		
+	}
+	
+	fin.close();
+	
+	return 0;
+}
