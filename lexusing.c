@@ -109,7 +109,7 @@ int isToken(char ch){
 }
 
 
-int isIDType(char c){
+int idType(char c){
     clearString();
     if(isalpha(c)){
         while(isalpha(c) && !isDelimiter(ch)){
@@ -147,7 +147,7 @@ int main(){
         }else if(isDelimiter(ch)){
             clearString();
         }else{
-            int type = isIDType(ch);
+            int type = idType(ch);
             if(type == 1)
                 printf("%s is a Keyword\n",str);
             else if(type == 2)
